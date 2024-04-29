@@ -3492,6 +3492,21 @@
 					"item": [
 						{
 							"name": "GET Search",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "0dd4d354-047b-44b9-b0e6-b2578e263d81",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"  pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
 							"id": "dee1ce24-4146-4d38-8792-680e2501a415",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
