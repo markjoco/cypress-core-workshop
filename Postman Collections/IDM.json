@@ -1,0 +1,3551 @@
+{
+	"info": {
+		"_postman_id": "ef6b2477-945c-4020-bb25-8150b601341e",
+		"name": "Sanity-IDM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Identity Details (GET/identity/{id})",
+			"item": [
+				{
+					"name": "Create Organisation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "98fdea71-8bde-40d8-bbed-000494a17c42",
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check for existence of id, referenceNumber, createdAt\", () => {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.id).to.exist.and.to.not.be.empty;\r",
+									"    pm.expect(responseData.referenceNumber).to.exist.and.to.not.be.empty;\r",
+									"    pm.expect(responseData.createdAt).to.exist.and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of origin, type, status\", () => {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.origin).to.eql(\"CAMBRIDGE\");\r",
+									"    pm.expect(responseData.type).to.eql(\"ORGANISATION\");\r",
+									"    pm.expect(responseData.status).to.eql(\"DISABLED\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of attribute1\", () => {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const sampleMessage = pm.variables.get('sampleMessage');\r",
+									"\r",
+									"    pm.expect(responseData.attributes.global.attribute1).to.eql(sampleMessage);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"//--------------------STORED VALUES--------------------//\r",
+									"\r",
+									"// Stores the \"id\" value from the response in an environment or global variable\r",
+									"var id = pm.response.json().id;\r",
+									"pm.collectionVariables.set('identityId', id);\r",
+									"\r",
+									"// Stores the \"referenceNumber\" value from the response in an environment or global variable\r",
+									"var referenceNumber = pm.response.json().referenceNumber;\r",
+									"pm.collectionVariables.set('referenceNumber', referenceNumber);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "90a548ec-b5b5-4aee-9a9f-da1f0724ff07",
+								"exec": [
+									"pm.collectionVariables.clear();\r",
+									"\r",
+									"//---------------------------------//\r",
+									"pm.collectionVariables.set('sampleMessage', \"This is a sample message. Hello there I'm Allona!\")  \r",
+									"pm.collectionVariables.get('sampleMessage')\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "9e110493-c74e-44c6-b18b-0c1ebfc03166",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\":\"ORGANISATION\",\r\n  \"origin\":\"CAMBRIDGE\",\r\n  \"status\":\"DISABLED\",\r\n  \"attributes\":{\r\n   \"global\": {\r\n    \"attribute1\": \"{{sampleMessage}}\"\r\n   }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Identity Details",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "9b7ac31a-cfcb-4582-819e-2f045f3ebfd2",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "0535dc8d-7380-4113-b169-b6b3cdb21efa",
+								"exec": [
+									"const response = pm.response.json()\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Attribute1 value is equal to the set variable 'sampleMessage'\", () => {\r",
+									"    const sampleMessage = pm.variables.get('sampleMessage');\r",
+									"\r",
+									"    pm.expect(response.attributes.global.attribute1).to.eql(sampleMessage);\r",
+									"});\r",
+									"pm.test(\"Match content of identityId\", () => {\r",
+									"    const id = pm.collectionVariables.get('identityId');\r",
+									"    \r",
+									"    pm.expect(response.id).to.eql(id);\r",
+									"});\r",
+									"pm.test(\"Match content of referenceNumber\", () => {\r",
+									"    const ref = pm.collectionVariables.get('referenceNumber');\r",
+									"\r",
+									"    pm.expect(response.referenceNumber).to.eql(ref);\r",
+									"});\r",
+									"pm.test(\"Type is equal to ORGANISATION\", () => {\r",
+									"    pm.expect(response.type).to.eql(\"ORGANISATION\");\r",
+									"});\r",
+									"pm.test(\"Origin is equal to CAMBRIDGE\", () => {\r",
+									"    pm.expect(response.origin).to.eql(\"CAMBRIDGE\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "b9a726e7-7e8c-47af-a49a-06c2249cbf18",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Organisation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2aad0d4b-1307-4148-bb8b-65afff884724",
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 204\", () => {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response body should be null\",  () => {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "e392a006-0dfe-473b-bf5f-e42d61a25bd5",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId}}?forceDelete=true",
+							"protocol": "https",
+							"host": [
+								"aop-idm-platform-{{env}}",
+								"aop",
+								"cambridge",
+								"org"
+							],
+							"port": "443",
+							"path": [
+								"idm",
+								"identity",
+								"{{identityId}}"
+							],
+							"query": [
+								{
+									"key": "forceDelete",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "3363bf90-9d95-476b-92c0-eeb364b30132",
+			"auth": {
+				"type": "apikey",
+				"apikey": {
+					"value": "oauth2-bypass123",
+					"key": "x-oauth2-bypass-token"
+				}
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8ce85235-82b9-4a47-9d29-ef1be9ced434",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "29fa0b0a-f35d-495d-a8e8-1319789b3deb",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Delete Identity (DELETE/identity/{identityId})",
+			"item": [
+				{
+					"name": "Create Identity - user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "12fa988a-c949-462c-9f66-2fb7bec78636",
+								"exec": [
+									"pm.collectionVariables.clear();\r",
+									"\r",
+									"//---------------------------------//\r",
+									"\r",
+									"function randomIdentifier (minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789') {\r",
+									"    if (!minValue) {\r",
+									"        minValue = 10;\r",
+									"        maxValue = 10;\r",
+									"    }\r",
+									"\r",
+									"    if (!maxValue) {\r",
+									"        maxValue = minValue;\r",
+									"    }\r",
+									"\r",
+									"    let length = _.random(minValue, maxValue),\r",
+									"        randomIdentifier1 = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomIdentifier1 += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomIdentifier1;\r",
+									"}\r",
+									"\r",
+									"pm.variables.set('randomIdentifier', randomIdentifier());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "a0e57b65-81ef-42e6-b602-bd1288488724",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains non-empty id and referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.id).to.exist.and.to.not.be.empty;\r",
+									"    pm.expect(responseData.referenceNumber).to.exist.and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"//-------------------STORED VALUES--------------------//\r",
+									"\r",
+									"\r",
+									"// Stores the \"id\" value from the response in a collection variable\r",
+									"var id1 = pm.response.json().id;\r",
+									"pm.collectionVariables.set('identityId1', id1);\r",
+									"\r",
+									"// Stores the \"referenceNumber\" value from the response in an environment or global variable\r",
+									"var referenceNumber1 = pm.response.json().referenceNumber;\r",
+									"pm.collectionVariables.set('referenceNumber1', referenceNumber1);\r",
+									"\r",
+									"\r",
+									"var identifier1 = pm.response.json().identifier;\r",
+									"pm.collectionVariables.set('identifier1', identifier1);\r",
+									"\r",
+									"var status1 = pm.response.json().status;\r",
+									"pm.collectionVariables.set('status1', status1);\r",
+									"\r",
+									"var type1 = pm.response.json().type;\r",
+									"pm.collectionVariables.set('type1', type1);\r",
+									"\r",
+									"var firstName1 = pm.response.json().attributes.basicUser.firstName;\r",
+									"pm.collectionVariables.set('firstName1', firstName1);\r",
+									"\r",
+									"var lastName1 = pm.response.json().attributes.basicUser.lastName;\r",
+									"pm.collectionVariables.set('lastName1', lastName1);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "23aa3afe-cc62-4356-9d44-fef08c240a4b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\":\"USER\",\r\n  \"origin\":\"CAMBRIDGE\",\r\n  \"identifier\": \"{{randomIdentifier}}\",\r\n  \"status\":\"DISABLED\",\r\n  \"attributes\":{\r\n   \"basicUser\": {\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\"\r\n   }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Identity - user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7a6b418a-51d5-4e15-a9ed-601e3da1da8a",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content attributes'\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const firstName1 = pm.collectionVariables.get('firstName1');\r",
+									"    const lastName1 = pm.collectionVariables.get('lastName1');\r",
+									"\r",
+									"    pm.expect(responseData.attributes.basicUser.firstName).to.eql(firstName1);\r",
+									"    pm.expect(responseData.attributes.basicUser.lastName).to.eql(lastName1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of identityId\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const id1 = pm.collectionVariables.get('identityId1');\r",
+									"    \r",
+									"    pm.expect(responseData.id).to.eql(id1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const referenceNumber1 = pm.collectionVariables.get('referenceNumber1');\r",
+									"\r",
+									"    pm.expect(responseData.referenceNumber).to.eql(referenceNumber1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of status\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const status1 = pm.collectionVariables.get('status1');\r",
+									"\r",
+									"    pm.expect(responseData.status).to.eql(status1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Type is equal to USER\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.type).to.eql(\"USER\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Origin is equal to CAMBRIDGE\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.origin).to.eql(\"CAMBRIDGE\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "19876a79-9180-4c26-99a0-aae2a06718da",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "0517fbdd-0d75-4b63-91e2-ad71b4b4b278",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId1}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Identity - user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cc9954d1-a132-4830-91c0-5ea3f032680e",
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response body should be null\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "48b704da-7c1c-4923-8c9b-6d2c0bfa2488",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId1}}?forceDelete=true",
+							"protocol": "https",
+							"host": [
+								"aop-idm-platform-{{env}}",
+								"aop",
+								"cambridge",
+								"org"
+							],
+							"port": "443",
+							"path": [
+								"idm",
+								"identity",
+								"{{identityId1}}"
+							],
+							"query": [
+								{
+									"key": "forceDelete",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Deletion - user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5fcadd4c-e271-4048-bb7e-31adb2880790",
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Match content of message\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.messages[0].message).to.eql(\"The identity provided does not exist.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "17f2921a-54a7-447b-8dfd-9a2326761bd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "135b95ff-74d5-4743-b2e0-8ede19abf0bb",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId1}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Identity - organisation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "2484333f-434a-4542-a533-8abbf9e0cf20",
+								"exec": [
+									"function randomIdentifier (minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789') {\r",
+									"    if (!minValue) {\r",
+									"        minValue = 10;\r",
+									"        maxValue = 10;\r",
+									"    }\r",
+									"\r",
+									"    if (!maxValue) {\r",
+									"        maxValue = minValue;\r",
+									"    }\r",
+									"\r",
+									"    let length = _.random(minValue, maxValue),\r",
+									"        randomIdentifier1 = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomIdentifier1 += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomIdentifier1;\r",
+									"}\r",
+									"\r",
+									"pm.variables.set('randomIdentifier', randomIdentifier());\r",
+									"\r",
+									"\r",
+									"//-------------------------------------------//\r",
+									"\r",
+									"/*let types = pm.environment.get(\"types\");\r",
+									"\r",
+									"if(!types || types.length == 0) {\r",
+									"    types = [\"USER\", \"ORGANISATION\", \"SOCIETY\", \"CONSORTIA\"];\r",
+									"}\r",
+									"\r",
+									"let currentType = types.shift();\r",
+									"console.log(currentType);\r",
+									"pm.environment.set(\"types\", currentType);\r",
+									"pm.environment.set(\"types\", types);\r",
+									"*/"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "acc48946-746a-4c0d-a6cf-997366e2d203",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains non-empty id and referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.id).to.exist.and.to.not.be.empty;\r",
+									"    pm.expect(responseData.referenceNumber).to.exist.and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//-------------------STORED VALUES--------------------//\r",
+									"\r",
+									"\r",
+									"// Stores the \"id\" value from the response in a collection variable\r",
+									"var id2 = pm.response.json().id;\r",
+									"pm.collectionVariables.set('identityId2', id2);\r",
+									"\r",
+									"// Stores the \"referenceNumber\" value from the response in an environment or global variable\r",
+									"var referenceNumber2 = pm.response.json().referenceNumber;\r",
+									"pm.collectionVariables.set('referenceNumber2', referenceNumber2);\r",
+									"\r",
+									"\r",
+									"var identifier2 = pm.response.json().identifier;\r",
+									"pm.collectionVariables.set('identifier2', identifier2);\r",
+									"\r",
+									"var status2 = pm.response.json().status;\r",
+									"pm.collectionVariables.set('status2', status2);\r",
+									"\r",
+									"var type2 = pm.response.json().type;\r",
+									"pm.collectionVariables.set('type2', type2);\r",
+									"\r",
+									"var firstName2 = pm.response.json().attributes.basicUser.firstName;\r",
+									"pm.collectionVariables.set('firstName2', firstName2);\r",
+									"\r",
+									"var lastName2 = pm.response.json().attributes.basicUser.lastName;\r",
+									"pm.collectionVariables.set('lastName2', lastName2);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "8f38561f-672d-437a-82ea-c6a8a9f9cc72",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\":\"ORGANISATION\",\r\n  \"origin\":\"CAMBRIDGE\",\r\n  \"identifier\": \"{{randomIdentifier}}\",\r\n  \"status\":\"DISABLED\",\r\n  \"attributes\":{\r\n   \"basicUser\": {\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\"\r\n   }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Identity - organisation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6ef7a42e-f74b-4e43-90d1-a673c29336d4",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content attributes'\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const firstName2 = pm.collectionVariables.get('firstName2');\r",
+									"    const lastName2 = pm.collectionVariables.get('lastName2');\r",
+									"\r",
+									"    pm.expect(responseData.attributes.basicUser.firstName).to.eql(firstName2);\r",
+									"    pm.expect(responseData.attributes.basicUser.lastName).to.eql(lastName2);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of identityId\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const id2 = pm.collectionVariables.get('identityId2');\r",
+									"    \r",
+									"    pm.expect(responseData.id).to.eql(id2);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const referenceNumber2 = pm.collectionVariables.get('referenceNumber2');\r",
+									"\r",
+									"    pm.expect(responseData.referenceNumber).to.eql(referenceNumber2);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of status\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const status2 = pm.collectionVariables.get('status2');\r",
+									"\r",
+									"    pm.expect(responseData.status).to.eql(status2);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Type is equal to USER\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.type).to.eql(\"ORGANISATION\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Origin is equal to CAMBRIDGE\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.origin).to.eql(\"CAMBRIDGE\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "10ee787f-2ad0-4ef4-83f2-58831b5591ab",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "faf9690f-4647-427b-8026-06eac65ed299",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId2}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Identity - organisation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "89490084-37b7-4142-944d-97016589d6f5",
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response body should be null\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "0fe5f078-dc39-43fe-9335-547698a7bb4f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId2}}?forceDelete=true",
+							"protocol": "https",
+							"host": [
+								"aop-idm-platform-{{env}}",
+								"aop",
+								"cambridge",
+								"org"
+							],
+							"port": "443",
+							"path": [
+								"idm",
+								"identity",
+								"{{identityId2}}"
+							],
+							"query": [
+								{
+									"key": "forceDelete",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Deletion - organisation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6356820b-b3f8-4a7e-8f98-349bd27e6f42",
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Match content of message\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.messages[0].message).to.eql(\"The identity provided does not exist.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c0b97cc8-1e6e-46f1-9937-210fd5e0c3f0",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "acd188be-ec11-4761-b28b-be5d61cf3480",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId2}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Identity - society",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "28011e41-3c79-436e-bede-b66e76ff7b60",
+								"exec": [
+									"function randomIdentifier (minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789') {\r",
+									"    if (!minValue) {\r",
+									"        minValue = 10;\r",
+									"        maxValue = 10;\r",
+									"    }\r",
+									"\r",
+									"    if (!maxValue) {\r",
+									"        maxValue = minValue;\r",
+									"    }\r",
+									"\r",
+									"    let length = _.random(minValue, maxValue),\r",
+									"        randomIdentifier1 = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomIdentifier1 += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomIdentifier1;\r",
+									"}\r",
+									"\r",
+									"pm.variables.set('randomIdentifier', randomIdentifier());\r",
+									"\r",
+									"\r",
+									"//-------------------------------------------//\r",
+									"\r",
+									"/*let types = pm.environment.get(\"types\");\r",
+									"\r",
+									"if(!types || types.length == 0) {\r",
+									"    types = [\"USER\", \"ORGANISATION\", \"SOCIETY\", \"CONSORTIA\"];\r",
+									"}\r",
+									"\r",
+									"let currentType = types.shift();\r",
+									"console.log(currentType);\r",
+									"pm.environment.set(\"types\", currentType);\r",
+									"pm.environment.set(\"types\", types);\r",
+									"*/"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "e5563a16-b867-4dd9-9f61-f73a71454b64",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains non-empty id and referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.id).to.exist.and.to.not.be.empty;\r",
+									"    pm.expect(responseData.referenceNumber).to.exist.and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//-------------------STORED VALUES--------------------//\r",
+									"\r",
+									"\r",
+									"// Stores the \"id\" value from the response in a collection variable\r",
+									"var id3 = pm.response.json().id;\r",
+									"pm.collectionVariables.set('identityId3', id3);\r",
+									"\r",
+									"// Stores the \"referenceNumber\" value from the response in an environment or global variable\r",
+									"var referenceNumber3 = pm.response.json().referenceNumber;\r",
+									"pm.collectionVariables.set('referenceNumber3', referenceNumber3);\r",
+									"\r",
+									"\r",
+									"var identifier3 = pm.response.json().identifier;\r",
+									"pm.collectionVariables.set('identifier3', identifier3);\r",
+									"\r",
+									"var status3 = pm.response.json().status;\r",
+									"pm.collectionVariables.set('status3', status3);\r",
+									"\r",
+									"var type3 = pm.response.json().type;\r",
+									"pm.collectionVariables.set('type3', type3);\r",
+									"\r",
+									"var firstName3 = pm.response.json().attributes.basicUser.firstName;\r",
+									"pm.collectionVariables.set('firstName3', firstName3);\r",
+									"\r",
+									"var lastName3 = pm.response.json().attributes.basicUser.lastName;\r",
+									"pm.collectionVariables.set('lastName3', lastName3);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "6d28e306-5c40-4ea3-93c3-5fe645ed2383",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\":\"SOCIETY\",\r\n  \"origin\":\"CAMBRIDGE\",\r\n  \"identifier\": \"{{randomIdentifier}}\",\r\n  \"status\":\"DISABLED\",\r\n  \"attributes\":{\r\n   \"basicUser\": {\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\"\r\n   }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Identity - society",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "378360bb-565f-4139-97fe-88f68a41db97",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content attributes'\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const firstName3 = pm.collectionVariables.get('firstName3');\r",
+									"    const lastName3 = pm.collectionVariables.get('lastName3');\r",
+									"\r",
+									"    pm.expect(responseData.attributes.basicUser.firstName).to.eql(firstName3);\r",
+									"    pm.expect(responseData.attributes.basicUser.lastName).to.eql(lastName3);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of identityId\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const id3 = pm.collectionVariables.get('identityId3');\r",
+									"    \r",
+									"    pm.expect(responseData.id).to.eql(id3);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const referenceNumber3 = pm.collectionVariables.get('referenceNumber3');\r",
+									"\r",
+									"    pm.expect(responseData.referenceNumber).to.eql(referenceNumber3);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of status\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const status3 = pm.collectionVariables.get('status3');\r",
+									"\r",
+									"    pm.expect(responseData.status).to.eql(status3);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Type is equal to USER\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.type).to.eql(\"SOCIETY\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Origin is equal to CAMBRIDGE\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.origin).to.eql(\"CAMBRIDGE\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c1c71551-d456-4208-a765-e9ce245002b5",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "c7b240e8-bf08-4dff-ae2c-8b8c673306c7",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId3}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Identity - society",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9e370fca-9469-4fbb-803b-0dc43428ae97",
+								"exec": [
+									"\r",
+									"\r",
+									"pm.test(\"Response status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response body should be null\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "82b5370a-28ba-4f43-a144-751721b88bc9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId3}}?forceDelete=true",
+							"protocol": "https",
+							"host": [
+								"aop-idm-platform-{{env}}",
+								"aop",
+								"cambridge",
+								"org"
+							],
+							"port": "443",
+							"path": [
+								"idm",
+								"identity",
+								"{{identityId3}}"
+							],
+							"query": [
+								{
+									"key": "forceDelete",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Deletion - society",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "47b54846-cb35-48d2-aff9-f12e1e3a7658",
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Match content of message\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.messages[0].message).to.eql(\"The identity provided does not exist.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "25b02969-c470-4f8e-a5de-e339ca1b4f64",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "fd2b7e7a-b36b-4ff4-9c6a-5f3d8e6948e7",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId3}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Identity - consortia",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "41629000-3403-48c6-b8ab-fd379d11fdf4",
+								"exec": [
+									"function randomIdentifier (minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789') {\r",
+									"    if (!minValue) {\r",
+									"        minValue = 10;\r",
+									"        maxValue = 10;\r",
+									"    }\r",
+									"\r",
+									"    if (!maxValue) {\r",
+									"        maxValue = minValue;\r",
+									"    }\r",
+									"\r",
+									"    let length = _.random(minValue, maxValue),\r",
+									"        randomIdentifier1 = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomIdentifier1 += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomIdentifier1;\r",
+									"}\r",
+									"\r",
+									"pm.variables.set('randomIdentifier', randomIdentifier());\r",
+									"\r",
+									"\r",
+									"//-------------------------------------------//\r",
+									"\r",
+									"/*let types = pm.environment.get(\"types\");\r",
+									"\r",
+									"if(!types || types.length == 0) {\r",
+									"    types = [\"USER\", \"ORGANISATION\", \"SOCIETY\", \"CONSORTIA\"];\r",
+									"}\r",
+									"\r",
+									"let currentType = types.shift();\r",
+									"console.log(currentType);\r",
+									"pm.environment.set(\"types\", currentType);\r",
+									"pm.environment.set(\"types\", types);\r",
+									"*/"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "83d8b78a-c550-4b5d-a865-d28cad15303d",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains non-empty id and referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.id).to.exist.and.to.not.be.empty;\r",
+									"    pm.expect(responseData.referenceNumber).to.exist.and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//-------------------STORED VALUES--------------------//\r",
+									"\r",
+									"\r",
+									"// Stores the \"id\" value from the response in a collection variable\r",
+									"var id4 = pm.response.json().id;\r",
+									"pm.collectionVariables.set('identityId4', id4);\r",
+									"\r",
+									"// Stores the \"referenceNumber\" value from the response in an environment or global variable\r",
+									"var referenceNumber4 = pm.response.json().referenceNumber;\r",
+									"pm.collectionVariables.set('referenceNumber4', referenceNumber4);\r",
+									"\r",
+									"\r",
+									"var identifier4 = pm.response.json().identifier;\r",
+									"pm.collectionVariables.set('identifier4', identifier4);\r",
+									"\r",
+									"var status4 = pm.response.json().status;\r",
+									"pm.collectionVariables.set('status4', status4);\r",
+									"\r",
+									"var type4 = pm.response.json().type;\r",
+									"pm.collectionVariables.set('type4', type4);\r",
+									"\r",
+									"var firstName4 = pm.response.json().attributes.basicUser.firstName;\r",
+									"pm.collectionVariables.set('firstName4', firstName4);\r",
+									"\r",
+									"var lastName4 = pm.response.json().attributes.basicUser.lastName;\r",
+									"pm.collectionVariables.set('lastName4', lastName4);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "374409fc-21e1-4ec0-bc06-86354ff378c4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\":\"CONSORTIA\",\r\n  \"origin\":\"CAMBRIDGE\",\r\n  \"identifier\": \"{{randomIdentifier}}\",\r\n  \"status\":\"DISABLED\",\r\n  \"attributes\":{\r\n   \"basicUser\": {\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\"\r\n   }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Identity - consortia",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c2a7ecfd-dd5c-429c-81b6-6dc943d0a7fe",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content attributes'\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const firstName4 = pm.collectionVariables.get('firstName4');\r",
+									"    const lastName4 = pm.collectionVariables.get('lastName4');\r",
+									"\r",
+									"    pm.expect(responseData.attributes.basicUser.firstName).to.eql(firstName4);\r",
+									"    pm.expect(responseData.attributes.basicUser.lastName).to.eql(lastName4);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of identityId\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const id4 = pm.collectionVariables.get('identityId4');\r",
+									"    \r",
+									"    pm.expect(responseData.id).to.eql(id4);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const referenceNumber4 = pm.collectionVariables.get('referenceNumber4');\r",
+									"\r",
+									"    pm.expect(responseData.referenceNumber).to.eql(referenceNumber4);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of status\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const status4 = pm.collectionVariables.get('status4');\r",
+									"\r",
+									"    pm.expect(responseData.status).to.eql(status4);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Type is equal to USER\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.type).to.eql(\"CONSORTIA\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Origin is equal to CAMBRIDGE\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.origin).to.eql(\"CAMBRIDGE\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e11fa98e-f4bb-4694-85ff-1976b089ffe6",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "116d6d44-dd04-41c8-a20e-8bc21a8644a6",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId4}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Identity - consortia",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8ab694f1-691e-47b3-bcda-4f831039a471",
+								"exec": [
+									"\r",
+									"\r",
+									"pm.test(\"Response status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response body should be null\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "0815497d-fcd0-4733-9195-84ecc2f6097c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId4}}?forceDelete=true",
+							"protocol": "https",
+							"host": [
+								"aop-idm-platform-{{env}}",
+								"aop",
+								"cambridge",
+								"org"
+							],
+							"port": "443",
+							"path": [
+								"idm",
+								"identity",
+								"{{identityId4}}"
+							],
+							"query": [
+								{
+									"key": "forceDelete",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Deletion - consortia",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6ecc2c71-9844-4b65-a2dc-233258a6e73e",
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Match content of message\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.messages[0].message).to.eql(\"The identity provided does not exist.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8874c236-4529-474e-9521-da9f20a0578d",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "e6c5146b-b8e1-4289-8254-c0d7a70d63eb",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId4}}"
+					},
+					"response": []
+				}
+			],
+			"id": "50821bf1-c4ac-41f4-8b9d-aac2b6b2d36d",
+			"auth": {
+				"type": "apikey",
+				"apikey": {
+					"value": "oauth2-bypass123",
+					"key": "x-oauth2-bypass-token"
+				}
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e864170d-a10d-4563-80f7-72b0a8b54596",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "22d7c8da-5c92-46fc-8dfd-37bb40cf086d",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Disable Identity (PUT/identity/{identityId}/disable)",
+			"item": [
+				{
+					"name": "Create Identity",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "433d81b3-d054-4e53-8956-1b372e64bb4e",
+								"exec": [
+									"pm.collectionVariables.clear();\r",
+									"\r",
+									"\r",
+									"//------------------------------------//\r",
+									"function randomIdentifier (minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789') {\r",
+									"    if (!minValue) {\r",
+									"        minValue = 10;\r",
+									"        maxValue = 10;\r",
+									"    }\r",
+									"\r",
+									"    if (!maxValue) {\r",
+									"        maxValue = minValue;\r",
+									"    }\r",
+									"\r",
+									"    let length = _.random(minValue, maxValue),\r",
+									"        randomIdentifier1 = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomIdentifier1 += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomIdentifier1;\r",
+									"}\r",
+									"\r",
+									"pm.variables.set('randomIdentifier', randomIdentifier());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "876b1a12-2688-442d-9e0d-4e5a7744ae58",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains non-empty id and referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.id).to.exist.and.to.not.be.empty;\r",
+									"    pm.expect(responseData.referenceNumber).to.exist.and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//-------------------STORED VALUES--------------------//\r",
+									"\r",
+									"\r",
+									"// Stores the \"id\" value from the response in a collection variable\r",
+									"var id = pm.response.json().id;\r",
+									"pm.collectionVariables.set('identityId', id);\r",
+									"\r",
+									"// Stores the \"referenceNumber\" value from the response in an environment or global variable\r",
+									"var referenceNumber = pm.response.json().referenceNumber;\r",
+									"pm.collectionVariables.set('referenceNumber', referenceNumber);\r",
+									"\r",
+									"\r",
+									"var identifier = pm.response.json().identifier;\r",
+									"pm.collectionVariables.set('identifier', identifier);\r",
+									"\r",
+									"var status = pm.response.json().status;\r",
+									"pm.collectionVariables.set('status', status);\r",
+									"\r",
+									"var type = pm.response.json().type;\r",
+									"pm.collectionVariables.set('type', type);\r",
+									"\r",
+									"var firstName = pm.response.json().attributes.basicUser.firstName;\r",
+									"pm.collectionVariables.set('firstName', firstName);\r",
+									"\r",
+									"var lastName = pm.response.json().attributes.basicUser.lastName;\r",
+									"pm.collectionVariables.set('lastName', lastName);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "1dc8e11f-61fa-46cb-b211-931d91b67d86",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": "x-oauth2-bypass-token",
+								"value": "oauth2-bypass123"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\":\"IDENTITY\",\r\n  \"origin\":\"CAMBRIDGE\",\r\n  \"identifier\":\"{{randomIdentifier}}\",\r\n  \"attributes\":{\r\n   \"basicUser\": {\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\"\r\n   }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Identity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "511cf622-eaff-403c-9697-6acbde997ea4",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content attributes'\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const firstName = pm.collectionVariables.get('firstName');\r",
+									"    const lastName = pm.collectionVariables.get('lastName');\r",
+									"\r",
+									"    pm.expect(responseData.attributes.basicUser.firstName).to.eql(firstName);\r",
+									"    pm.expect(responseData.attributes.basicUser.lastName).to.eql(lastName);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of identityId\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const identityId = pm.collectionVariables.get('identityId');\r",
+									"    \r",
+									"    pm.expect(responseData.id).to.eql(identityId);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const referenceNumber = pm.collectionVariables.get('referenceNumber');\r",
+									"\r",
+									"    pm.expect(responseData.referenceNumber).to.eql(referenceNumber);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of status\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const status = pm.collectionVariables.get('status');\r",
+									"\r",
+									"    pm.expect(responseData.status).to.eql(status);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Type is equal to USER\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.type).to.eql(\"IDENTITY\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Origin is equal to CAMBRIDGE\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.origin).to.eql(\"CAMBRIDGE\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "0bc7b472-88cd-4a09-bc4c-b82e2845c2c7",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "8d210b9b-bd95-4da1-bf7c-e8661020b995",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": "x-oauth2-bypass-token",
+								"value": "oauth2-bypass123"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Disable Identity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0038b218-42b6-4000-9be5-8222ca248f7f",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content attributes'\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const firstName = pm.collectionVariables.get('firstName');\r",
+									"    const lastName = pm.collectionVariables.get('lastName');\r",
+									"\r",
+									"    pm.expect(responseData.attributes.basicUser.firstName).to.eql(firstName);\r",
+									"    pm.expect(responseData.attributes.basicUser.lastName).to.eql(lastName);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of identityId\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const identityId = pm.collectionVariables.get('identityId');\r",
+									"    \r",
+									"    pm.expect(responseData.id).to.eql(identityId);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const referenceNumber = pm.collectionVariables.get('referenceNumber');\r",
+									"\r",
+									"    pm.expect(responseData.referenceNumber).to.eql(referenceNumber);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of status\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.status).to.eql(\"DISABLED\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Type is equal to USER\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.type).to.eql(\"IDENTITY\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Origin is equal to CAMBRIDGE\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.origin).to.eql(\"CAMBRIDGE\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "5af41722-745f-4645-8141-fb8af0ed6e54",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": "x-oauth2-bypass-token",
+								"value": "oauth2-bypass123"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId}}/disable"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Disabled",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bf358528-ef66-4dd7-8b78-b05777f424db",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content attributes'\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const firstName = pm.collectionVariables.get('firstName');\r",
+									"    const lastName = pm.collectionVariables.get('lastName');\r",
+									"\r",
+									"    pm.expect(responseData.attributes.basicUser.firstName).to.eql(firstName);\r",
+									"    pm.expect(responseData.attributes.basicUser.lastName).to.eql(lastName);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of identityId\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const identityId = pm.collectionVariables.get('identityId');\r",
+									"    \r",
+									"    pm.expect(responseData.id).to.eql(identityId);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const referenceNumber = pm.collectionVariables.get('referenceNumber');\r",
+									"\r",
+									"    pm.expect(responseData.referenceNumber).to.eql(referenceNumber);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of status\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.status).to.eql(\"DISABLED\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Type is equal to USER\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.type).to.eql(\"IDENTITY\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Origin is equal to CAMBRIDGE\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.origin).to.eql(\"CAMBRIDGE\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "30518a0c-3221-49b2-a981-3c7d89001a05",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "20048e99-1e11-4c6b-8bd2-476ff5579575",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": "x-oauth2-bypass-token",
+								"value": "oauth2-bypass123"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Identity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f87c0c23-fbf8-43e4-9603-f0056aaae08d",
+								"exec": [
+									"pm.test(\"Response status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response body should be null\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "d49ef170-7b18-4219-8e16-c666273d4374",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": "x-oauth2-bypass-token",
+								"value": "oauth2-bypass123"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId}}?forceDelete=true",
+							"protocol": "https",
+							"host": [
+								"aop-idm-platform-{{env}}",
+								"aop",
+								"cambridge",
+								"org"
+							],
+							"port": "443",
+							"path": [
+								"idm",
+								"identity",
+								"{{identityId}}"
+							],
+							"query": [
+								{
+									"key": "forceDelete",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "0d3b5f19-fa78-45e2-8684-acb0ae231dab",
+			"auth": {
+				"type": "apikey",
+				"apikey": {}
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5b6f6288-7811-4aff-8bf2-a505630dce4e",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "8106f917-107f-49ed-9450-2afbe9f18600",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Post Relationship (POST/relationship)",
+			"item": [
+				{
+					"name": "Create Identity - 1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "7ca9d6ed-2ee2-42a1-a01d-46f8a33ca435",
+								"exec": [
+									"pm.collectionVariables.clear();\r",
+									"\r",
+									"\r",
+									"//-------------------------------------//\r",
+									"function randomIdentifier (minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789') {\r",
+									"    if (!minValue) {\r",
+									"        minValue = 10;\r",
+									"        maxValue = 10;\r",
+									"    }\r",
+									"\r",
+									"    if (!maxValue) {\r",
+									"        maxValue = minValue;\r",
+									"    }\r",
+									"\r",
+									"    let length = _.random(minValue, maxValue),\r",
+									"        randomIdentifier1 = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomIdentifier1 += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomIdentifier1;\r",
+									"}\r",
+									"\r",
+									"pm.variables.set('randomIdentifier', randomIdentifier());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "abdb8ca5-a194-4925-8bb6-1017ccfb9832",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains non-empty id and referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.id).to.exist.and.to.not.be.empty;\r",
+									"    pm.expect(responseData.referenceNumber).to.exist.and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//-------------------STORED VALUES--------------------//\r",
+									"\r",
+									"\r",
+									"// Stores the \"id\" value from the response in a collection variable\r",
+									"var id1 = pm.response.json().id;\r",
+									"pm.collectionVariables.set('identityId1', id1);\r",
+									"\r",
+									"// Stores the \"referenceNumber\" value from the response in an environment or global variable\r",
+									"var referenceNumber1 = pm.response.json().referenceNumber;\r",
+									"pm.collectionVariables.set('referenceNumber1', referenceNumber1);\r",
+									"\r",
+									"\r",
+									"var identifier1 = pm.response.json().identifier;\r",
+									"pm.collectionVariables.set('identifier1', identifier1);\r",
+									"\r",
+									"var status1 = pm.response.json().status;\r",
+									"pm.collectionVariables.set('status1', status1);\r",
+									"\r",
+									"var type1 = pm.response.json().type;\r",
+									"pm.collectionVariables.set('type1', type1);\r",
+									"\r",
+									"var firstName1 = pm.response.json().attributes.basicUser.firstName;\r",
+									"pm.collectionVariables.set('firstName1', firstName1);\r",
+									"\r",
+									"var lastName1 = pm.response.json().attributes.basicUser.lastName;\r",
+									"pm.collectionVariables.set('lastName1', lastName1);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "8ae54946-90df-495c-9242-b72a82ca0e36",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": "x-oauth2-bypass-token",
+								"value": "oauth2-bypass123"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\":\"IDENTITY\",\r\n  \"origin\":\"CAMBRIDGE\",\r\n  \"identifier\":\"{{randomIdentifier}}\",\r\n  \"attributes\":{\r\n   \"basicUser\": {\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\"\r\n   }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Identity - 2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "7693c574-d760-486c-b6bd-56d080e38160",
+								"exec": [
+									"function randomIdentifier (minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789') {\r",
+									"    if (!minValue) {\r",
+									"        minValue = 10;\r",
+									"        maxValue = 10;\r",
+									"    }\r",
+									"\r",
+									"    if (!maxValue) {\r",
+									"        maxValue = minValue;\r",
+									"    }\r",
+									"\r",
+									"    let length = _.random(minValue, maxValue),\r",
+									"        randomIdentifier1 = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomIdentifier1 += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomIdentifier1;\r",
+									"}\r",
+									"\r",
+									"pm.variables.set('randomIdentifier', randomIdentifier());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "2d7ad97d-de1b-4c6c-8be6-a4e0b44e4c9a",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains non-empty id and referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.id).to.exist.and.to.not.be.empty;\r",
+									"    pm.expect(responseData.referenceNumber).to.exist.and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//-------------------STORED VALUES--------------------//\r",
+									"\r",
+									"\r",
+									"// Stores the \"id\" value from the response in a collection variable\r",
+									"var id2 = pm.response.json().id;\r",
+									"pm.collectionVariables.set('identityId2', id2);\r",
+									"\r",
+									"// Stores the \"referenceNumber\" value from the response in an environment or global variable\r",
+									"var referenceNumber2 = pm.response.json().referenceNumber;\r",
+									"pm.collectionVariables.set('referenceNumber2', referenceNumber2);\r",
+									"\r",
+									"\r",
+									"var identifier2 = pm.response.json().identifier;\r",
+									"pm.collectionVariables.set('identifier2', identifier2);\r",
+									"\r",
+									"var status2 = pm.response.json().status;\r",
+									"pm.collectionVariables.set('status2', status2);\r",
+									"\r",
+									"var type2 = pm.response.json().type;\r",
+									"pm.collectionVariables.set('type2', type2);\r",
+									"\r",
+									"var firstName2 = pm.response.json().attributes.basicUser.firstName;\r",
+									"pm.collectionVariables.set('firstName2', firstName2);\r",
+									"\r",
+									"var lastName2 = pm.response.json().attributes.basicUser.lastName;\r",
+									"pm.collectionVariables.set('lastName2', lastName2);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "b687ea7f-1e19-4aa0-9a6a-11299bfca247",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": "x-oauth2-bypass-token",
+								"value": "oauth2-bypass123"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\":\"IDENTITY\",\r\n  \"origin\":\"CAMBRIDGE\",\r\n  \"identifier\":\"{{randomIdentifier}}\",\r\n  \"attributes\":{\r\n   \"basicUser\": {\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\"\r\n   }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Identity - 3",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ec19a859-3021-4747-9d5f-2ddf94f1e242",
+								"exec": [
+									"function randomIdentifier (minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789') {\r",
+									"    if (!minValue) {\r",
+									"        minValue = 10;\r",
+									"        maxValue = 10;\r",
+									"    }\r",
+									"\r",
+									"    if (!maxValue) {\r",
+									"        maxValue = minValue;\r",
+									"    }\r",
+									"\r",
+									"    let length = _.random(minValue, maxValue),\r",
+									"        randomIdentifier1 = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomIdentifier1 += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomIdentifier1;\r",
+									"}\r",
+									"\r",
+									"pm.variables.set('randomIdentifier', randomIdentifier());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "f5dd3616-c039-478d-8c57-d759fb4626de",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains non-empty id and referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.id).to.exist.and.to.not.be.empty;\r",
+									"    pm.expect(responseData.referenceNumber).to.exist.and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//-------------------STORED VALUES--------------------//\r",
+									"\r",
+									"\r",
+									"// Stores the \"id\" value from the response in a collection variable\r",
+									"var id3 = pm.response.json().id;\r",
+									"pm.collectionVariables.set('identityId3', id3);\r",
+									"\r",
+									"// Stores the \"referenceNumber\" value from the response in an environment or global variable\r",
+									"var referenceNumber3 = pm.response.json().referenceNumber;\r",
+									"pm.collectionVariables.set('referenceNumber3', referenceNumber3);\r",
+									"\r",
+									"\r",
+									"var identifier3 = pm.response.json().identifier;\r",
+									"pm.collectionVariables.set('identifier3', identifier3);\r",
+									"\r",
+									"var status3 = pm.response.json().status;\r",
+									"pm.collectionVariables.set('status3', status3);\r",
+									"\r",
+									"var type3 = pm.response.json().type;\r",
+									"pm.collectionVariables.set('type3', type3);\r",
+									"\r",
+									"var firstName3 = pm.response.json().attributes.basicUser.firstName;\r",
+									"pm.collectionVariables.set('firstName3', firstName3);\r",
+									"\r",
+									"var lastName3 = pm.response.json().attributes.basicUser.lastName;\r",
+									"pm.collectionVariables.set('lastName3', lastName3);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "8d1f607a-2e67-4fe6-96e5-1d4935a07573",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": "x-oauth2-bypass-token",
+								"value": "oauth2-bypass123"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\":\"IDENTITY\",\r\n  \"origin\":\"CAMBRIDGE\",\r\n  \"identifier\":\"{{randomIdentifier}}\",\r\n  \"attributes\":{\r\n   \"basicUser\": {\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\"\r\n   }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity"
+					},
+					"response": []
+				},
+				{
+					"name": "POST Relationship (Type 1)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f7c9007d-40e0-45eb-a38c-1d837fce7e32",
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response does not contain sensitive information\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "37da220f-1adf-4d56-870d-c31997796247",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": "x-oauth2-bypass-token",
+								"value": "oauth2-bypass123"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"origin\": \"{{identityId1}}\",\r\n   \"destination\": \"{{identityId2}}\",\r\n   \"direction\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/relationship"
+					},
+					"response": []
+				},
+				{
+					"name": "POST Relationship (Type 2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "220d2378-a7e7-4111-9c01-9f4821af5fe4",
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response does not contain sensitive information\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "9ec09d25-96e6-4479-a058-cbe8d7736e76",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": "x-oauth2-bypass-token",
+								"value": "oauth2-bypass123"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"origin\": \"{{identityId1}}\",\r\n   \"destination\": \"{{identityId3}}\",\r\n   \"direction\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/relationship"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete identity - 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "81b65bfa-31ce-4d4f-9f33-e75d8409ac0f",
+								"exec": [
+									"pm.test(\"Response status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response body should be null\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "444867f7-f854-420c-a8e0-bbb6c8e0230d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": "x-oauth2-bypass-token",
+								"value": "oauth2-bypass123"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId1}}?forceDelete=true",
+							"protocol": "https",
+							"host": [
+								"aop-idm-platform-{{env}}",
+								"aop",
+								"cambridge",
+								"org"
+							],
+							"port": "443",
+							"path": [
+								"idm",
+								"identity",
+								"{{identityId1}}"
+							],
+							"query": [
+								{
+									"key": "forceDelete",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete identity - 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0df71dbf-f70e-4935-8c58-cf8b5cc74878",
+								"exec": [
+									"pm.test(\"Response status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response body should be null\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "e1d53f72-3236-49b4-a33d-c56bb9472f22",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": "x-oauth2-bypass-token",
+								"value": "oauth2-bypass123"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId2}}?forceDelete=true",
+							"protocol": "https",
+							"host": [
+								"aop-idm-platform-{{env}}",
+								"aop",
+								"cambridge",
+								"org"
+							],
+							"port": "443",
+							"path": [
+								"idm",
+								"identity",
+								"{{identityId2}}"
+							],
+							"query": [
+								{
+									"key": "forceDelete",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete identity - 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bbb9ac50-a61a-48a0-90e3-70fa3d85ce05",
+								"exec": [
+									"pm.test(\"Response status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response body should be null\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "b8792ae8-66bf-4af0-a654-231c6ee3a374",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"key": "x-oauth2-bypass-token",
+								"value": "oauth2-bypass123"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId3}}?forceDelete=true",
+							"protocol": "https",
+							"host": [
+								"aop-idm-platform-{{env}}",
+								"aop",
+								"cambridge",
+								"org"
+							],
+							"port": "443",
+							"path": [
+								"idm",
+								"identity",
+								"{{identityId3}}"
+							],
+							"query": [
+								{
+									"key": "forceDelete",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "00b2e96c-0283-4963-8c57-b49c77e73020",
+			"auth": {
+				"type": "apikey",
+				"apikey": {}
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "da3b75a0-9fc9-420c-812a-a6c6683915a9",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "166aa9b9-72c8-413e-b204-fe5d7c37c5d7",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Get Relationship Details (GET/relationship/{identityId})",
+			"item": [
+				{
+					"name": "Create Identity - 1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "9e442e7d-b64d-444d-ba16-557850cc6776",
+								"exec": [
+									"pm.collectionVariables.clear();\r",
+									"\r",
+									"\r",
+									"//-----------------------------------//\r",
+									"function randomIdentifier (minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789') {\r",
+									"    if (!minValue) {\r",
+									"        minValue = 10;\r",
+									"        maxValue = 10;\r",
+									"    }\r",
+									"\r",
+									"    if (!maxValue) {\r",
+									"        maxValue = minValue;\r",
+									"    }\r",
+									"\r",
+									"    let length = _.random(minValue, maxValue),\r",
+									"        randomIdentifier1 = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomIdentifier1 += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomIdentifier1;\r",
+									"}\r",
+									"\r",
+									"pm.variables.set('randomIdentifier', randomIdentifier());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "76e8c209-6728-407a-b658-2ac97ac82301",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains non-empty id and referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.id).to.exist.and.to.not.be.empty;\r",
+									"    pm.expect(responseData.referenceNumber).to.exist.and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//-------------------STORED VALUES--------------------//\r",
+									"\r",
+									"\r",
+									"// Stores the \"id\" value from the response in a collection variable\r",
+									"var id1 = pm.response.json().id;\r",
+									"pm.collectionVariables.set('identityId1', id1);\r",
+									"\r",
+									"// Stores the \"referenceNumber\" value from the response in an environment or global variable\r",
+									"var referenceNumber1 = pm.response.json().referenceNumber;\r",
+									"pm.collectionVariables.set('referenceNumber1', referenceNumber1);\r",
+									"\r",
+									"\r",
+									"var identifier1 = pm.response.json().identifier;\r",
+									"pm.collectionVariables.set('identifier1', identifier1);\r",
+									"\r",
+									"var status1 = pm.response.json().status;\r",
+									"pm.collectionVariables.set('status1', status1);\r",
+									"\r",
+									"var type1 = pm.response.json().type;\r",
+									"pm.collectionVariables.set('type1', type1);\r",
+									"\r",
+									"var firstName1 = pm.response.json().attributes.basicUser.firstName;\r",
+									"pm.collectionVariables.set('firstName1', firstName1);\r",
+									"\r",
+									"var lastName1 = pm.response.json().attributes.basicUser.lastName;\r",
+									"pm.collectionVariables.set('lastName1', lastName1);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "eb2d36fa-6f75-4b0a-9b08-cd57b3f35f6a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\":\"IDENTITY\",\r\n  \"origin\":\"CAMBRIDGE\",\r\n  \"identifier\":\"{{randomIdentifier}}\",\r\n  \"attributes\":{\r\n   \"basicUser\": {\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\"\r\n   }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Identity - 2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "698ab6be-0651-404a-8661-a9214198a142",
+								"exec": [
+									"//-----------------------------------//\r",
+									"function randomIdentifier (minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789') {\r",
+									"    if (!minValue) {\r",
+									"        minValue = 10;\r",
+									"        maxValue = 10;\r",
+									"    }\r",
+									"\r",
+									"    if (!maxValue) {\r",
+									"        maxValue = minValue;\r",
+									"    }\r",
+									"\r",
+									"    let length = _.random(minValue, maxValue),\r",
+									"        randomIdentifier1 = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomIdentifier1 += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomIdentifier1;\r",
+									"}\r",
+									"\r",
+									"pm.variables.set('randomIdentifier', randomIdentifier());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "0147588d-5ab3-41d0-a5c3-65422eb4a31d",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains non-empty id and referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.id).to.exist.and.to.not.be.empty;\r",
+									"    pm.expect(responseData.referenceNumber).to.exist.and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//-------------------STORED VALUES--------------------//\r",
+									"\r",
+									"\r",
+									"// Stores the \"id\" value from the response in a collection variable\r",
+									"var id2 = pm.response.json().id;\r",
+									"pm.collectionVariables.set('identityId2', id2);\r",
+									"\r",
+									"// Stores the \"referenceNumber\" value from the response in an environment or global variable\r",
+									"var referenceNumber2 = pm.response.json().referenceNumber;\r",
+									"pm.collectionVariables.set('referenceNumber2', referenceNumber2);\r",
+									"\r",
+									"\r",
+									"var identifier2 = pm.response.json().identifier;\r",
+									"pm.collectionVariables.set('identifier2', identifier2);\r",
+									"\r",
+									"var status2 = pm.response.json().status;\r",
+									"pm.collectionVariables.set('status2', status2);\r",
+									"\r",
+									"var type2 = pm.response.json().type;\r",
+									"pm.collectionVariables.set('type2', type2);\r",
+									"\r",
+									"var firstName2 = pm.response.json().attributes.basicUser.firstName;\r",
+									"pm.collectionVariables.set('firstName2', firstName2);\r",
+									"\r",
+									"var lastName2 = pm.response.json().attributes.basicUser.lastName;\r",
+									"pm.collectionVariables.set('lastName2', lastName2);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "2c963e95-e7e4-4d29-8b6d-2f0123e0e810",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\":\"IDENTITY\",\r\n  \"origin\":\"CAMBRIDGE\",\r\n  \"identifier\":\"{{randomIdentifier}}\",\r\n  \"attributes\":{\r\n   \"basicUser\": {\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\"\r\n   }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Identity - 3",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "35784211-a567-403c-82bb-cee40a143e7e",
+								"exec": [
+									"function randomIdentifier (minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789') {\r",
+									"    if (!minValue) {\r",
+									"        minValue = 10;\r",
+									"        maxValue = 10;\r",
+									"    }\r",
+									"\r",
+									"    if (!maxValue) {\r",
+									"        maxValue = minValue;\r",
+									"    }\r",
+									"\r",
+									"    let length = _.random(minValue, maxValue),\r",
+									"        randomIdentifier1 = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomIdentifier1 += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomIdentifier1;\r",
+									"}\r",
+									"\r",
+									"pm.variables.set('randomIdentifier', randomIdentifier());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "01e974fb-ecdd-4080-b3d7-205b64b91688",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains non-empty id and referenceNumber\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.id).to.exist.and.to.not.be.empty;\r",
+									"    pm.expect(responseData.referenceNumber).to.exist.and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//-------------------STORED VALUES--------------------//\r",
+									"\r",
+									"\r",
+									"// Stores the \"id\" value from the response in a collection variable\r",
+									"var id3 = pm.response.json().id;\r",
+									"pm.collectionVariables.set('identityId3', id3);\r",
+									"\r",
+									"// Stores the \"referenceNumber\" value from the response in an environment or global variable\r",
+									"var referenceNumber3 = pm.response.json().referenceNumber;\r",
+									"pm.collectionVariables.set('referenceNumber3', referenceNumber3);\r",
+									"\r",
+									"\r",
+									"var identifier3 = pm.response.json().identifier;\r",
+									"pm.collectionVariables.set('identifier3', identifier3);\r",
+									"\r",
+									"var status3 = pm.response.json().status;\r",
+									"pm.collectionVariables.set('status3', status3);\r",
+									"\r",
+									"var type3 = pm.response.json().type;\r",
+									"pm.collectionVariables.set('type3', type3);\r",
+									"\r",
+									"var firstName3 = pm.response.json().attributes.basicUser.firstName;\r",
+									"pm.collectionVariables.set('firstName3', firstName3);\r",
+									"\r",
+									"var lastName3 = pm.response.json().attributes.basicUser.lastName;\r",
+									"pm.collectionVariables.set('lastName3', lastName3);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "b2f2669a-cb94-4b5b-9a50-95073b34924c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\":\"IDENTITY\",\r\n  \"origin\":\"CAMBRIDGE\",\r\n  \"identifier\":\"{{randomIdentifier}}\",\r\n  \"attributes\":{\r\n   \"basicUser\": {\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\"\r\n   }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity"
+					},
+					"response": []
+				},
+				{
+					"name": "POST Relationship (Type 1)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "91a70736-27fb-4374-9a77-e018765d7dfd",
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response does not contain sensitive information\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "e4d7e894-f482-40b8-b32e-0c7d0ce7124b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"origin\": \"{{identityId1}}\",\r\n   \"destination\": \"{{identityId2}}\",\r\n   \"direction\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/relationship"
+					},
+					"response": []
+				},
+				{
+					"name": "POST Relationship (Type 2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "afc88ca2-f6dc-4f63-a4fe-bbfd66c87744",
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response does not contain sensitive information\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "cb7e60f4-ff6e-4945-8fd4-c2b704919c5d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"origin\": \"{{identityId1}}\",\r\n   \"destination\": \"{{identityId3}}\",\r\n   \"direction\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/relationship"
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Relationship Details - 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cae5e211-4f1f-4e37-91b6-be8324b35938",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//-----------------Associated Identities---------------//\r",
+									"pm.test(\"Match content associatedIdentityList'\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const identityId2 = pm.collectionVariables.get('identityId2');\r",
+									"    const identityId3 = pm.collectionVariables.get('identityId3');\r",
+									"\r",
+									"    pm.expect(responseData.associatedIdentityList.associatedIdentities[0].destination).to.be.oneOf([identityId2,identityId3]);\r",
+									"    pm.expect(responseData.associatedIdentityList.associatedIdentities[1].destination).to.be.oneOf([identityId2,identityId3]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify count of associatedIdentityList.associatedIdentities is 2\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.associatedIdentityList.associatedIdentities.length).to.eql(2);\r",
+									"});\r",
+									"\r",
+									"//-----------------Associated Identities---------------//\r",
+									"\r",
+									"\r",
+									"pm.test(\"Match content of identityId1\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const identityId1 = pm.collectionVariables.get('identityId1');\r",
+									"    \r",
+									"    pm.expect(responseData.id).to.eql(identityId1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of referenceNumber1\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const referenceNumber1 = pm.collectionVariables.get('referenceNumber1');\r",
+									"\r",
+									"    pm.expect(responseData.referenceNumber).to.eql(referenceNumber1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of identifier1\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const identifier1 = pm.collectionVariables.get('identifier1');\r",
+									"\r",
+									"    pm.expect(responseData.identifier).to.eql(identifier1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of status1\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const status1 = pm.collectionVariables.get('status1');\r",
+									"\r",
+									"    pm.expect(responseData.status).to.eql(status1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Type is equal to IDENTITY\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.type).to.eql(\"IDENTITY\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Origin is equal to CAMBRIDGE\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.origin).to.eql(\"CAMBRIDGE\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "ebd1f4c1-2ba4-46de-9c8e-e654e9905ab3",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/relationship/{{identityId1}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Relationship Details - 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f90cff8d-bf29-4bdf-830d-afac389249ab",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Test to verify the content of associatedIdentityList\r",
+									"pm.test(\"Verify the content of associatedIdentityList\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const associatedIdentityList = responseData.associatedIdentityList;\r",
+									"\r",
+									"    pm.expect(associatedIdentityList).to.be.an('object').and.to.have.property('roles');\r",
+									"    pm.expect(associatedIdentityList).to.have.property('associatedIdentities');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Match content of identityId2\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const identityId2 = pm.collectionVariables.get('identityId2');\r",
+									"    \r",
+									"    pm.expect(responseData.id).to.eql(identityId2);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of referenceNumber2\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const referenceNumber2 = pm.collectionVariables.get('referenceNumber2');\r",
+									"    \r",
+									"    pm.expect(responseData.referenceNumber).to.eql(referenceNumber2);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of identifier2\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const identifier2 = pm.collectionVariables.get('identifier2');\r",
+									"\r",
+									"    pm.expect(responseData.identifier).to.eql(identifier2);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of status2\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const status2 = pm.collectionVariables.get('status2');\r",
+									"\r",
+									"    pm.expect(responseData.status).to.eql(status2);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Type is equal to IDENTITY\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.type).to.eql(\"IDENTITY\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Origin is equal to CAMBRIDGE\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.origin).to.eql(\"CAMBRIDGE\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "fe0d23e1-7492-4416-8b0f-ef1a35b41b1e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/relationship/{{identityId2}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Relationship Details - 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "65ee19c3-1fec-4571-a164-34a2cbed7207",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Test to verify the content of associatedIdentityList\r",
+									"pm.test(\"Verify the content of associatedIdentityList\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const associatedIdentityList = responseData.associatedIdentityList;\r",
+									"\r",
+									"    pm.expect(associatedIdentityList).to.be.an('object').and.to.have.property('roles');\r",
+									"    pm.expect(associatedIdentityList).to.have.property('associatedIdentities');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Match content of identityId3\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const identityId3 = pm.collectionVariables.get('identityId3');\r",
+									"    \r",
+									"    pm.expect(responseData.id).to.eql(identityId3);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of referenceNumber3\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const referenceNumber3 = pm.collectionVariables.get('referenceNumber3');\r",
+									"    \r",
+									"    pm.expect(responseData.referenceNumber).to.eql(referenceNumber3);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of identifier3\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const identifier3 = pm.collectionVariables.get('identifier3');\r",
+									"\r",
+									"    pm.expect(responseData.identifier).to.eql(identifier3);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Match content of status3\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const status3 = pm.collectionVariables.get('status3');\r",
+									"\r",
+									"    pm.expect(responseData.status).to.eql(status3);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Type is equal to IDENTITY\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.type).to.eql(\"IDENTITY\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Origin is equal to CAMBRIDGE\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.origin).to.eql(\"CAMBRIDGE\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "ef9d9b4a-7f00-4ef8-b9cf-0fa2702746f8",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/relationship/{{identityId3}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete identity - 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0548ef13-84ec-4b22-bd43-5eeaf1f18018",
+								"exec": [
+									"pm.test(\"Response status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response body should be null\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "ee61f6af-7d3e-4100-8943-abc0e9d221b4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId1}}?forceDelete=true",
+							"protocol": "https",
+							"host": [
+								"aop-idm-platform-{{env}}",
+								"aop",
+								"cambridge",
+								"org"
+							],
+							"port": "443",
+							"path": [
+								"idm",
+								"identity",
+								"{{identityId1}}"
+							],
+							"query": [
+								{
+									"key": "forceDelete",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete identity - 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1202b707-6de4-43f3-9688-4a6e59add123",
+								"exec": [
+									"pm.test(\"Response status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response body should be null\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "87bd0026-7954-4e3d-b351-91db7917b811",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId2}}?forceDelete=true",
+							"protocol": "https",
+							"host": [
+								"aop-idm-platform-{{env}}",
+								"aop",
+								"cambridge",
+								"org"
+							],
+							"port": "443",
+							"path": [
+								"idm",
+								"identity",
+								"{{identityId2}}"
+							],
+							"query": [
+								{
+									"key": "forceDelete",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete identity - 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "444fd546-e12a-45a9-b92a-33a25da576dd",
+								"exec": [
+									"pm.test(\"Response status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response body should be null\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "411dd178-026d-42e2-ac30-217802cf3fbd",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://aop-idm-platform-{{env}}.aop.cambridge.org:443/idm/identity/{{identityId3}}?forceDelete=true",
+							"protocol": "https",
+							"host": [
+								"aop-idm-platform-{{env}}",
+								"aop",
+								"cambridge",
+								"org"
+							],
+							"port": "443",
+							"path": [
+								"idm",
+								"identity",
+								"{{identityId3}}"
+							],
+							"query": [
+								{
+									"key": "forceDelete",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "3a3ab76a-2d72-47bd-987d-2fca94880fd3",
+			"auth": {
+				"type": "apikey",
+				"apikey": {
+					"value": "oauth2-bypass123",
+					"key": "x-oauth2-bypass-token"
+				}
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "69a29f28-179a-4ed8-9aeb-9ed91f02fd05",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "0655abb8-a83b-4594-8543-3babfb04cf58",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "Product",
+					"item": [
+						{
+							"name": "GET Product By Id",
+							"id": "e88015fb-cde9-4f34-84a4-04c36358fba9",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "https://search-api-search-si-ext.aop.cambridge.org/v1/products/BE272621D4CB7762B0C2EB80EBA4294C"
+							},
+							"response": []
+						}
+					],
+					"id": "0101d3f4-8b11-4d7d-9bc9-51e185ea91e0"
+				},
+				{
+					"name": "Search",
+					"item": [
+						{
+							"name": "GET Search",
+							"id": "dee1ce24-4146-4d38-8792-680e2501a415",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "https://search-api-search-si-ext.aop.cambridge.org/v1/search"
+							},
+							"response": []
+						}
+					],
+					"id": "d0aa2567-5ce5-4cb2-a344-af1638b12d42"
+				}
+			],
+			"id": "36f70691-fb67-433b-8495-1c19c15f9312"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "4781949b-fd2e-4512-b7b2-0d52ce24cf46",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "5f309d23-d21b-4784-b64f-be333c0a2eba",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "sampleMessage",
+			"value": ""
+		},
+		{
+			"key": "identityId",
+			"value": ""
+		},
+		{
+			"key": "referenceNumber",
+			"value": ""
+		}
+	]
+}
